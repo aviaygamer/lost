@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYPER // LOST & FOUND — Campus Network</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Syne & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Syne:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        syne: ['Syne', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#07090e',
+                        surface: '#0e131f',
+                        surfaceLight: '#161c2e',
+                        neonCyan: '#00f0ff',
+                        neonPink: '#ff007f',
+                        neonPurple: '#7000ff',
+                        neonLime: '#00ff66',
+                        neonYellow: '#ffe600',
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 20px -3px rgba(0, 240, 255, 0.4)',
+                        'neon-pink': '0 0 20px -3px rgba(255, 0, 127, 0.4)',
+                        'neon-lime': '0 0 20px -3px rgba(0, 255, 102, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Hyper Cyberpunk Styles */
+        body {
+            background-color: #07090e;
+            color: #f1f5f9;
+            font-family: 'Syne', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animated Grid Overlay */
+        .bg-grid-pattern {
+            background-size: 36px 36px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Floating Glow Orbs */
+        @keyframes floatGlow1 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            50% { transform: translate(60px, -40px) scale(1.2); opacity: 0.5; }
+        }
+        @keyframes floatGlow2 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.25; }
+            50% { transform: translate(-50px, 50px) scale(1.15); opacity: 0.45; }
+        }
+        .animate-glow-1 { animation: floatGlow1 14s ease-in-out infinite; }
+        .animate-glow-2 { animation: floatGlow2 18s ease-in-out infinite; }
+
+        /* Pulse Reward Shimmer */
+        @keyframes rewardPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 230, 0, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 22px rgba(255, 230, 0, 0.9); transform: scale(1.04); }
+        }
+        .reward-pulse-anim { animation: rewardPulse 2s ease-in-out infinite; }
+
+        /* Glassmorphic Cyber Card */
+        .glass-card {
+            background: rgba(14, 19, 31, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 12px 30px -5px rgba(0, 240, 255, 0.25);
+        }
+
+        /* Neubrutalist Sharp Accents */
+        .brutal-border {
+            border: 2px solid #00f0ff;
+            box-shadow: 4px 4px 0px #7000ff;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #161c2e;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+
+        /* Modal Spring Entrance */
+        .modal-bounce-in {
+            animation: modalSpring 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes modalSpring {
+            0% { opacity: 0; transform: scale(0.85) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Item Entrance Animation */
+        .card-entrance {
+            animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes cardEntrance {
+            0% { opacity: 0; transform: translateY(24px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Card Delete Exit Animation */
+        .card-exit {
+            animation: cardExit 0.35s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+        @keyframes cardExit {
+            0% { opacity: 1; transform: scale(1); max-height: 500px; }
+            100% { opacity: 0; transform: scale(0.75) translateY(20px); max-height: 0; margin: 0; padding: 0; }
+        }
+    </style>
+</head>
+<body class="bg-obsidian min-h-screen flex flex-col relative antialiased selection:bg-neonPink selection:text-white">
+
+    <!-- Ambient Floating Background Glow Orbs -->
+    <div class="fixed top-10 left-10 w-96 h-96 bg-neonPurple/20 rounded-full blur-[120px] pointer-events-none animate-glow-1 z-0"></div>
+    <div class="fixed bottom-10 right-10 w-96 h-96 bg-neonCyan/20 rounded-full blur-[130px] pointer-events-none animate-glow-2 z-0"></div>
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neonPink/10 rounded-full blur-[150px] pointer-events-none z-0"></div>
+
+    <!-- Grid Lines Pattern Background -->
+    <div class="fixed inset-0 bg-grid-pattern pointer-events-none z-0 opacity-60"></div>
+
+    <!-- MAIN HEADER NAV -->
+    <header class="sticky top-0 z-40 bg-obsidian/80 backdrop-blur-xl border-b border-slate-800/80 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Brand Title & Cyberpunk Glow Tag -->
+                <div class="flex items-center space-x-3 cursor-pointer group" onclick="resetAllFilters()">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-neonPurple via-neonPink to-neonCyan flex items-center justify-center text-black font-black text-2xl shadow-neon-cyan transform group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300">
+                        ⚡
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl sm:text-2xl font-black tracking-wider bg-gradient-to-r from-neonCyan via-white to-neonPink bg-clip-text text-transparent font-mono">
+                                HYPER // LOST
+                            </span>
+                            <span class="bg-neonCyan/10 border border-neonCyan/40 text-neonCyan font-mono text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest shadow-neon-cyan">
+                                v2.0 SIMAT
+                            </span>
+                        </div>
+                        <p class="text-[11px] font-mono text-slate-400">AUTOMATED CAMPUS ITEM RECOVERY BY SIMAT</p>
+                    </div>
+                </div>
+
+                <!-- Report Action Button -->
+                <button onclick="openPostModal()" class="relative group overflow-hidden rounded-2xl p-0.5 font-bold focus:outline-none">
+                    <span class="absolute inset-0 bg-gradient-to-r from-neonCyan via-neonPurple to-neonPink rounded-2xl animate-pulse"></span>
+                    <span class="relative block px-5 py-2.5 rounded-[14px] bg-obsidian hover:bg-transparent transition-all duration-300 text-xs sm:text-sm font-extrabold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-bolt text-neonCyan group-hover:text-neonYellow transition-colors"></i>
+                        <span class="tracking-wider">REPORT ITEM</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="relative z-10 flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- HYPER HERO BANNER & COUNTER STATS -->
+        <section class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden border border-neonCyan/20 shadow-glass">
+            <div class="absolute -right-16 -top-16 w-64 h-64 bg-neonCyan/10 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- Left Title Banner -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-neonPurple/20 border border-neonPurple/40 text-neonPink text-xs font-mono font-bold tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-neonPink animate-ping"></span>
+                        <span>CAMPUS RECOVERY NETWORK</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-none text-white font-syne">
+                        LOST ON CAMPUS? <br>
+                        <span class="bg-gradient-to-r from-neonCyan via-neonLime to-neonYellow bg-clip-text text-transparent">RECLAIM IT FAST.</span>
+                    </h1>
+
+                    <p class="text-slate-400 text-xs sm:text-sm font-mono max-w-xl leading-relaxed">
+                        Instant reporting for university tech, student IDs, keys & gear. Offer rewards, broadcast items across campus, and meet safely.
+                    </p>
+                </div>
+
+                <!-- Live Counters Grid -->
+                <div class="lg:col-span-5 grid grid-cols-3 gap-3">
+                    <div class="bg-surface/80 p-4 rounded-2xl border border-rose-500/30 text-center backdrop-blur-md">
+                        <span class="block text-2xl sm:text-3xl font-black font-mono text-rose-500" id="stat-lost">0</span>
+                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Active Lost</span>
+                    </div>
+                    <div class="bg-surface/80 p-4 rounded-2xl border border-neonLime/30 text-center backdrop-blur-md">
+                        <span class="block text-2xl sm:text-3xl font-black font-mono text-neonLime" id="stat-found">0</span>
+                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Active Found</span>
+                    </div>
+                    <div class="bg-surface/80 p-4 rounded-2xl border border-neonYellow/30 text-center backdrop-blur-md">
+                        <span class="block text-2xl sm:text-3xl font-black font-mono text-neonYellow" id="stat-reunited">0</span>
+                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Reunited</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEARCH TOOLBAR & FILTERS -->
+        <section class="glass-card rounded-2xl p-5 border border-slate-800 space-y-5">
+            
+            <!-- Top Controls Row -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                
+                <!-- Live Search Bar -->
+                <div class="md:col-span-5 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-neonCyan text-sm"></i>
+                    <input type="text" id="search-input" oninput="applyFilters()" placeholder="Search AirPods, ID card, location, or room..." 
+                           class="w-full pl-11 pr-4 py-3 bg-surfaceLight/80 border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neonCyan focus:ring-1 focus:ring-neonCyan font-mono transition-all">
+                </div>
+
+                <!-- Type Segment Buttons -->
+                <div class="md:col-span-4 bg-surface p-1 rounded-xl flex space-x-1 font-mono text-xs border border-slate-800">
+                    <button id="filter-type-all" onclick="setTypeFilter('all')" class="flex-1 py-2 rounded-lg font-bold transition-all text-center">ALL</button>
+                    <button id="filter-type-lost" onclick="setTypeFilter('lost')" class="flex-1 py-2 rounded-lg font-bold transition-all text-center text-rose-400">🔴 LOST</button>
+                    <button id="filter-type-found" onclick="setTypeFilter('found')" class="flex-1 py-2 rounded-lg font-bold transition-all text-center text-neonLime">🟢 FOUND</button>
+                    <button id="filter-type-reunited" onclick="setTypeFilter('reunited')" class="flex-1 py-2 rounded-lg font-bold transition-all text-center text-neonYellow">✨ REUNITED</button>
+                </div>
+
+                <!-- Campus Location Selector -->
+                <div class="md:col-span-3">
+                    <select id="location-filter" onchange="applyFilters()" class="w-full px-4 py-3 bg-surfaceLight/80 border border-slate-700/80 rounded-xl text-xs sm:text-sm text-slate-200 font-mono focus:outline-none focus:border-neonCyan transition-all">
+                        <option value="all">📍 All Campus Spots</option>
+                        <option value="Central Library">Central Library</option>
+                        <option value="Engineering Complex">Engineering Complex</option>
+                        <option value="Student Union / Canteen">Student Union / Canteen</option>
+                        <option value="Sports Complex & Gym">Sports Complex & Gym</option>
+                        <option value="Science & Bio Quad">Science & Bio Quad</option>
+                        <option value="Student Hostels">Student Hostels</option>
+                        <option value="Main Auditorium">Main Auditorium</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Category Pills & Toggles -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/80 text-xs font-mono">
+                
+                <!-- Category Pills -->
+                <div class="flex flex-wrap gap-2" id="category-pills">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Options -->
+                <div class="flex items-center space-x-4">
+                    <label class="flex items-center space-x-2 cursor-pointer select-none text-slate-300 hover:text-neonYellow">
+                        <input type="checkbox" id="reward-only-filter" onchange="applyFilters()" class="w-4 h-4 rounded bg-surface border-slate-700 text-neonYellow focus:ring-0">
+                        <span class="font-bold text-neonYellow">💰 Reward Offered Only</span>
+                    </label>
+
+                    <button onclick="resetAllFilters()" class="text-slate-400 hover:text-neonCyan transition-colors">
+                        <i class="fa-solid fa-rotate-left mr-1"></i>RESET
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ITEMS GRID -->
+        <section class="min-h-[400px]">
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden py-20 text-center space-y-4 glass-card rounded-3xl border border-dashed border-slate-800">
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-surfaceLight flex items-center justify-center text-neonCyan text-3xl shadow-neon-cyan">
+                    📡
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-lg font-bold font-syne text-white">NO ITEMS MATCH SEARCH SPECS</h3>
+                    <p class="text-slate-500 text-xs font-mono max-w-sm mx-auto">Try clearing location filters or search terms.</p>
+                </div>
+                <button onclick="resetAllFilters()" class="px-5 py-2.5 rounded-xl bg-neonCyan/10 border border-neonCyan/40 text-neonCyan text-xs font-mono font-bold hover:bg-neonCyan hover:text-black transition-all">
+                    CLEAR FILTERS
+                </button>
+            </div>
+
+            <!-- Grid -->
+            <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic Cards Inserted Here -->
+            </div>
+
+        </section>
+
+        <!-- CAMPUS SAFETY & HANDOVER TIPS ACCORDION -->
+        <section class="glass-card rounded-3xl p-6 border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSafetyAccordion()">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-neonPurple/20 border border-neonPurple/40 text-neonPurple flex items-center justify-center text-lg">
+                        🛡️
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-white font-syne">SAFE HANDOVER & CAMPUS EXCHANGE TIPS</h3>
+                        <p class="text-xs text-slate-400 font-mono">Recommended public exchange points for students & faculty</p>
+                    </div>
+                </div>
+                <i id="safety-accordion-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+            </div>
+
+            <div id="safety-accordion-content" class="hidden pt-4 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono text-slate-300">
+                <div class="bg-surface p-4 rounded-2xl border border-slate-800 space-y-1">
+                    <span class="text-neonCyan font-bold">📍 Campus Security Desk</span>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Located at Main Gate A. Ideal for high-value tech (laptops, phones) and wallet exchanges.</p>
+                </div>
+                <div class="bg-surface p-4 rounded-2xl border border-slate-800 space-y-1">
+                    <span class="text-neonLime font-bold">☕ Library Main Help Desk</span>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Central floor staff can safely hold unclaimed textbooks, keychains, and student IDs.</p>
+                </div>
+                <div class="bg-surface p-4 rounded-2xl border border-slate-800 space-y-1">
+                    <span class="text-neonYellow font-bold">🆔 Identity Verification</span>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Always ask the claimant to show their Student Portal or unlock device before handing over.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-slate-800/80 bg-obsidian py-8 text-xs font-mono text-slate-500 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="text-neonCyan font-bold">HYPER // LOST & FOUND</span>
+                <span>&bull;</span>
+                <span>University Student Network</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="resetToDemoData()" class="hover:text-rose-400 transition-colors">
+                    [RESET DEMO DATA]
+                </button>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- REPORT ITEM MODAL -->
+    <div id="post-modal-backdrop" class="fixed inset-0 bg-obsidian/80 backdrop-blur-md z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div id="post-modal-card" class="glass-card rounded-3xl w-full max-w-xl max-h-[90vh] flex flex-col border border-neonCyan/30 shadow-2xl overflow-hidden modal-bounce-in">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-slate-800 flex items-center justify-between bg-surface/50">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">⚡</span>
+                    <h3 class="text-lg font-extrabold text-white font-syne">BROADCAST ITEM TO CAMPUS</h3>
+                </div>
+                <button onclick="closePostModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="item-form" onsubmit="handleFormSubmit(event)" class="p-6 overflow-y-auto space-y-5 text-xs font-mono">
+                
+                <!-- Type Toggle -->
+                <div>
+                    <label class="block font-bold text-slate-300 mb-2">LISTING TYPE *</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative flex items-center justify-center p-3.5 border border-slate-700 rounded-2xl cursor-pointer hover:bg-rose-500/10 transition-colors has-[:checked]:border-rose-500 has-[:checked]:bg-rose-500/20 has-[:checked]:text-rose-400">
+                            <input type="radio" name="formType" value="lost" required class="sr-only" checked onchange="toggleRewardInputVisibility()">
+                            <span class="flex items-center space-x-2 font-bold text-sm">
+                                <span>🔴</span>
+                                <span>LOST ITEM</span>
+                            </span>
+                        </label>
+                        <label class="relative flex items-center justify-center p-3.5 border border-slate-700 rounded-2xl cursor-pointer hover:bg-neonLime/10 transition-colors has-[:checked]:border-neonLime has-[:checked]:bg-neonLime/20 has-[:checked]:text-neonLime">
+                            <input type="radio" name="formType" value="found" required class="sr-only" onchange="toggleRewardInputVisibility()">
+                            <span class="flex items-center space-x-2 font-bold text-sm">
+                                <span>🟢</span>
+                                <span>FOUND ITEM</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Title & Category -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="form-title" class="block font-bold text-slate-300 mb-1">ITEM TITLE *</label>
+                        <input type="text" id="form-title" required placeholder="e.g. AirPods Pro 2, Sci-Calc" class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                    </div>
+                    <div>
+                        <label for="form-category" class="block font-bold text-slate-300 mb-1">CATEGORY *</label>
+                        <select id="form-category" required class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                            <option value="electronics">🎧 Electronics & Audio</option>
+                            <option value="idkeys">🪪 ID Cards & Keys</option>
+                            <option value="textbooks">📚 Textbooks & Notes</option>
+                            <option value="bags">🎒 Bags & Gear</option>
+                            <option value="apparel">🧢 Apparel & Eyewear</option>
+                            <option value="other">📦 Misc / Bottles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Location & Date -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="form-location" class="block font-bold text-slate-300 mb-1">CAMPUS LOCATION *</label>
+                        <select id="form-location" required class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                            <option value="Central Library">Central Library</option>
+                            <option value="Engineering Complex">Engineering Complex</option>
+                            <option value="Student Union / Canteen">Student Union / Canteen</option>
+                            <option value="Sports Complex & Gym">Sports Complex & Gym</option>
+                            <option value="Science & Bio Quad">Science & Bio Quad</option>
+                            <option value="Student Hostels">Student Hostels</option>
+                            <option value="Main Auditorium">Main Auditorium</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="form-date" class="block font-bold text-slate-300 mb-1">DATE *</label>
+                        <input type="date" id="form-date" required class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                    </div>
+                </div>
+
+                <!-- Contact Student Info -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="form-student-name" class="block font-bold text-slate-300 mb-1">YOUR NAME & DEPT *</label>
+                        <input type="text" id="form-student-name" required placeholder="Alex (CS Sophomore)" class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                    </div>
+                    <div>
+                        <label for="form-contact" class="block font-bold text-slate-300 mb-1">EMAIL / WHATSAPP *</label>
+                        <input type="text" id="form-contact" required placeholder="alex@univ.edu / +1 555-019" class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                    </div>
+                </div>
+
+                <!-- Reward Selector -->
+                <div id="reward-input-container">
+                    <label for="form-reward-type" class="block font-bold text-neonYellow mb-1">REWARD OFFERED (OPTIONAL)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <select id="form-reward-type" class="px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonYellow">
+                            <option value="🧋 Boba / Coffee on Me">🧋 Boba / Coffee on Me</option>
+                            <option value="💵 Cash Reward ($15 - $25)">💵 Cash Reward ($15 - $25)</option>
+                            <option value="🍕 Canteen Treat / Meal">🍕 Canteen Treat / Meal</option>
+                            <option value="❤️ Eternal Gratitude & Hugs">❤️ Eternal Gratitude & Hugs</option>
+                        </select>
+                        <input type="text" id="form-reward-custom" placeholder="Or custom: e.g. $20 Cash" class="px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonYellow">
+                    </div>
+                </div>
+
+                <!-- Image URL & Description -->
+                <div>
+                    <label for="form-image" class="block font-bold text-slate-300 mb-1">PHOTO URL (OPTIONAL)</label>
+                    <input type="url" id="form-image" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan">
+                </div>
+
+                <div>
+                    <label for="form-description" class="block font-bold text-slate-300 mb-1">DESCRIPTION & DETAILS *</label>
+                    <textarea id="form-description" required rows="3" placeholder="Describe room numbers, keychains, stickers, color..." class="w-full px-4 py-3 bg-surface border border-slate-700 rounded-xl text-white focus:outline-none focus:border-neonCyan resize-none"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-3 border-t border-slate-800 flex items-center justify-end space-x-3">
+                    <button type="button" onclick="closePostModal()" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white">CANCEL</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-neonCyan via-neonPurple to-neonPink text-black font-extrabold shadow-neon-cyan hover:opacity-95 transition-opacity">BROADCAST ITEM</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- DETAIL MODAL -->
+    <div id="detail-modal-backdrop" class="fixed inset-0 bg-obsidian/85 backdrop-blur-md z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div id="detail-modal-card" class="glass-card rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-neonCyan/30 shadow-2xl overflow-hidden modal-bounce-in">
+            
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-surface/60">
+                <div class="flex items-center space-x-2 font-mono">
+                    <span id="detail-type-badge" class="px-3 py-1 rounded-full text-xs font-black uppercase"></span>
+                    <span class="text-slate-600">&bull;</span>
+                    <span id="detail-category-badge" class="text-xs text-slate-400"></span>
+                </div>
+                <button onclick="closeDetailModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6 font-mono text-xs">
+                
+                <div class="flex flex-col sm:flex-row gap-6 items-start">
+                    <img id="detail-image" src="" alt="Item" class="w-full sm:w-48 h-48 object-cover rounded-2xl border border-slate-700 shadow-xl shrink-0">
+                    
+                    <div class="space-y-4 flex-grow">
+                        <h2 id="detail-title" class="text-2xl font-black font-syne text-white leading-tight"></h2>
+                        
+                        <!-- Reward Badge Pill -->
+                        <div id="detail-reward-container" class="hidden">
+                            <span class="inline-flex items-center space-x-2 bg-neonYellow/10 border border-neonYellow/50 text-neonYellow px-3 py-1.5 rounded-xl text-xs font-bold shadow-neon-yellow reward-pulse-anim">
+                                <span>🎁</span>
+                                <span id="detail-reward-text"></span>
+                            </span>
+                        </div>
+
+                        <div class="space-y-2 text-slate-300">
+                            <div class="flex items-center space-x-2 bg-surface p-2.5 rounded-xl border border-slate-800">
+                                <span class="text-neonCyan">📍</span>
+                                <span id="detail-location"></span>
+                            </div>
+                            <div class="flex items-center space-x-2 bg-surface p-2.5 rounded-xl border border-slate-800">
+                                <span class="text-neonLime">📅</span>
+                                <span id="detail-date"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="bg-surface p-4 rounded-2xl border border-slate-800 space-y-1">
+                    <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">ITEM SPECIFICATIONS</span>
+                    <p id="detail-description" class="text-slate-300 leading-relaxed whitespace-pre-line"></p>
+                </div>
+
+                <!-- Student Contact Banner -->
+                <div class="bg-gradient-to-r from-surfaceLight to-surface p-4 rounded-2xl border border-neonCyan/30 flex items-center justify-between">
+                    <div>
+                        <div class="text-[10px] text-neonCyan uppercase tracking-widest font-bold">REPORTER CONTACT</div>
+                        <div id="detail-student-name" class="font-bold text-white text-sm mt-0.5"></div>
+                        <div id="detail-contact-info" class="text-slate-400 text-xs"></div>
+                    </div>
+                    <button onclick="copyContactInfo()" class="px-3.5 py-2 rounded-xl bg-neonCyan/20 border border-neonCyan/40 text-neonCyan hover:bg-neonCyan hover:text-black font-bold transition-all">
+                        COPY INFO
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="px-6 py-4 border-t border-slate-800 bg-surface/60 flex items-center justify-between font-mono">
+                <button id="modal-delete-btn" class="text-slate-500 hover:text-rose-400 text-xs transition-colors">
+                    🗑️ DELETE LISTING
+                </button>
+                <div class="flex items-center space-x-3">
+                    <button onclick="closeDetailModal()" class="px-4 py-2 rounded-xl border border-slate-700 text-slate-400 hover:text-white">CLOSE</button>
+                    <button id="modal-resolve-btn" class="px-5 py-2 rounded-xl bg-neonLime text-black font-extrabold shadow-neon-lime hover:opacity-90">
+                        MARK REUNITED
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirm-modal-backdrop" class="fixed inset-0 bg-obsidian/85 backdrop-blur-md z-50 hidden opacity-0 transition-opacity duration-200 flex items-center justify-center p-4">
+        <div id="confirm-modal-card" class="glass-card rounded-3xl w-full max-w-sm p-6 space-y-4 text-center border border-rose-500/40 modal-bounce-in">
+            <div class="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-500 border border-rose-500/40 flex items-center justify-center text-2xl mx-auto">
+                ⚠️
+            </div>
+            <div class="space-y-1">
+                <h4 id="confirm-title" class="text-lg font-bold font-syne text-white">ARE YOU SURE?</h4>
+                <p id="confirm-msg" class="text-xs font-mono text-slate-400"></p>
+            </div>
+            <div class="flex items-center space-x-3 pt-2 font-mono text-xs">
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white">CANCEL</button>
+                <button id="confirm-action-btn" class="flex-1 py-2.5 rounded-xl bg-rose-600 text-white font-bold hover:bg-rose-500">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- TOAST NOTIFICATIONS CONTAINER -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-3 pointer-events-none"></div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // Seed Data
+        const sampleCampusItems = [
+            {
+                id: 'item_1',
+                title: 'Apple AirPods Pro (3rd Gen) Case',
+                type: 'lost',
+                category: 'electronics',
+                location: 'Central Library',
+                date: '2026-10-26',
+                studentName: 'Ethan Vance (CS Dept)',
+                contact: 'ethan.v@univ.edu | +1 555-0192',
+                reward: '🧋 Boba / Coffee on Me',
+                image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80',
+                description: 'Left on quiet study desk #42 on 3rd floor. White case with a subtle anime sticker on the back side.',
+                resolved: false,
+                createdAt: Date.now() - 3600000 * 5
+            },
+            {
+                id: 'item_2',
+                title: 'College Student ID Card & Gym Badge',
+                type: 'found',
+                category: 'idkeys',
+                location: 'Student Union / Canteen',
+                date: '2026-10-27',
+                studentName: 'Canteen Helpdesk Desk',
+                contact: 'Turned in at Canteen Desk #1',
+                reward: '',
+                image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80',
+                description: 'Found near the coffee vending machines. Student name on ID starts with "Marcus K.". Safe at front desk.',
+                resolved: false,
+                createdAt: Date.now() - 3600000 * 12
+            },
+            {
+                id: 'item_3',
+                title: 'TI-84 Plus CE Graphing Calculator',
+                type: 'lost',
+                category: 'electronics',
+                location: 'Engineering Complex',
+                date: '2026-10-25',
+                studentName: 'Sophia Lin (MechEng)',
+                contact: 'sophia.l@univ.edu',
+                reward: '💵 Cash Reward (rs20)',
+                image: 'https://images.unsplash.com/photo-1632571401005-458e9d244591?auto=format&fit=crop&w=600&q=80',
+                description: 'Pink metallic finish calculator left in Lab 304 after Tuesday physics session. Crucial for upcoming midterms!',
+                resolved: false,
+                createdAt: Date.now() - 3600000 * 28
+            },
+            {
+                id: 'item_4',
+                title: 'Blue Matte Hydro Flask (32 oz)',
+                type: 'found',
+                category: 'other',
+                location: 'Sports Complex & Gym',
+                date: '2026-10-26',
+                studentName: 'Coach Dave',
+                contact: 'Gym Counter Office',
+                reward: '',
+                image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=600&q=80',
+                description: 'Found beside the court 2 basketball bench. Covered with Yosemite and NASA stickers.',
+                resolved: true,
+                createdAt: Date.now() - 3600000 * 48
+            }
+        ];
+
+        // Categories Map
+        const categories = {
+            all: { label: 'All Items', icon: '⚡' },
+            electronics: { label: '🎧 Tech & Audio', icon: '🎧', img: 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=600&q=80' },
+            idkeys: { label: '🪪 ID Cards & Keys', icon: '🪪', img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80' },
+            textbooks: { label: '📚 Textbooks & Notes', icon: '📚', img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80' },
+            bags: { label: '🎒 Bags & Gear', icon: '🎒', img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80' },
+            apparel: { label: '🧢 Apparel & Glasses', icon: '🧢', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80' },
+            other: { label: '📦 Misc & Bottles', icon: '📦', img: 'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80' }
+        };
+
+        // App State
+        let campusItems = [];
+        let activeCategory = 'all';
+        let activeTypeFilter = 'all';
+        let confirmCallback = null;
+        let activeDetailItemId = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderCategoryPills();
+            updateTypeButtonsUI();
+            applyFilters();
+            document.getElementById('form-date').max = new Date().toISOString().split('T')[0];
+        });
+
+        function loadState() {
+            const saved = localStorage.getItem('hyper_campus_items');
+            if (saved) {
+                try { campusItems = JSON.parse(saved); } 
+                catch (e) { campusItems = [...sampleCampusItems]; saveState(); }
+            } else {
+                campusItems = [...sampleCampusItems];
+                saveState();
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('hyper_campus_items', JSON.stringify(campusItems));
+            updateCounters();
+        }
+
+        function resetToDemoData() {
+            openConfirmModal('Reset to Demo Data?', 'This will reload all pre-seeded campus sample items.', () => {
+                campusItems = [...sampleCampusItems];
+                saveState();
+                applyFilters();
+                showToast('Reset completed!', 'success');
+            });
+        }
+
+        function updateCounters() {
+            const lost = campusItems.filter(i => i.type === 'lost' && !i.resolved).length;
+            const found = campusItems.filter(i => i.type === 'found' && !i.resolved).length;
+            const reunited = campusItems.filter(i => i.resolved).length;
+
+            document.getElementById('stat-lost').textContent = lost;
+            document.getElementById('stat-found').textContent = found;
+            document.getElementById('stat-reunited').textContent = reunited;
+        }
+
+        function renderCategoryPills() {
+            const container = document.getElementById('category-pills');
+            container.innerHTML = Object.keys(categories).map(catKey => {
+                const cat = categories[catKey];
+                const isActive = activeCategory === catKey;
+                return `
+                    <button onclick="setCategoryFilter('${catKey}')" class="px-3 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
+                        isActive 
+                        ? 'bg-neonCyan text-black font-extrabold shadow-neon-cyan' 
+                        : 'bg-surfaceLight/80 text-slate-400 hover:text-white hover:bg-surfaceLight'
+                    }">
+                        <span>${cat.label}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function setCategoryFilter(catKey) {
+            activeCategory = catKey;
+            renderCategoryPills();
+            applyFilters();
+        }
+
+        function setTypeFilter(type) {
+            activeTypeFilter = type;
+            updateTypeButtonsUI();
+            applyFilters();
+        }
+
+        function updateTypeButtonsUI() {
+            ['all', 'lost', 'found', 'reunited'].forEach(t => {
+                const btn = document.getElementById(`filter-type-${t}`);
+                if (!btn) return;
+                if (activeTypeFilter === t) {
+                    btn.classList.add('bg-surfaceLight', 'text-white', 'shadow-sm', 'border', 'border-slate-700');
+                } else {
+                    btn.classList.remove('bg-surfaceLight', 'text-white', 'shadow-sm', 'border', 'border-slate-700');
+                }
+            });
+        }
+
+        function applyFilters() {
+            const grid = document.getElementById('items-grid');
+            const emptyState = document.getElementById('empty-state');
+
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const locationVal = document.getElementById('location-filter').value;
+            const rewardOnly = document.getElementById('reward-only-filter').checked;
+
+            let filtered = campusItems.filter(item => {
+                // Type Filter
+                if (activeTypeFilter === 'reunited' && !item.resolved) return false;
+                if (activeTypeFilter === 'lost' && (item.type !== 'lost' || item.resolved)) return false;
+                if (activeTypeFilter === 'found' && (item.type !== 'found' || item.resolved)) return false;
+                if (activeTypeFilter === 'all' && item.resolved) return false;
+
+                // Category
+                if (activeCategory !== 'all' && item.category !== activeCategory) return false;
+
+                // Location
+                if (locationVal !== 'all' && item.location !== locationVal) return false;
+
+                // Reward Only
+                if (rewardOnly && (!item.reward || item.reward.trim() === '')) return false;
+
+                // Search Query
+                if (query) {
+                    const matchTitle = item.title.toLowerCase().includes(query);
+                    const matchDesc = item.description.toLowerCase().includes(query);
+                    const matchLoc = item.location.toLowerCase().includes(query);
+                    const matchStudent = item.studentName.toLowerCase().includes(query);
+                    if (!matchTitle && !matchDesc && !matchLoc && !matchStudent) return false;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            grid.innerHTML = filtered.map((item, idx) => {
+                const catObj = categories[item.category] || categories.other;
+                const imgSrc = item.image && item.image.trim() !== '' ? item.image : catObj.img;
+                const isLost = item.type === 'lost';
+
+                return `
+                    <div id="card-${item.id}" class="glass-card rounded-3xl overflow-hidden border border-slate-800 flex flex-col justify-between group relative card-entrance" style="animation-delay: ${idx * 0.05}s">
+                        
+                        <!-- Header Image Container -->
+                        <div class="relative h-48 w-full bg-surface overflow-hidden cursor-pointer" onclick="openDetailModal('${item.id}')">
+                            <img src="${imgSrc}" alt="${escapeHtml(item.title)}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${item.resolved ? 'grayscale opacity-60' : ''}"
+                                 onerror="this.src='${catObj.img}'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-black/30"></div>
+
+                            <!-- Status Badges -->
+                            <div class="absolute top-3 left-3 flex flex-wrap gap-2">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black font-mono tracking-wider uppercase shadow-lg ${
+                                    isLost ? 'bg-rose-500 text-white shadow-neon-pink' : 'bg-neonLime text-black shadow-neon-lime'
+                                }">
+                                    ${item.type}
+                                </span>
+                                ${item.resolved ? `
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black font-mono bg-neonYellow text-black shadow-neon-yellow">
+                                        ✨ REUNITED
+                                    </span>
+                                ` : ''}
+                            </div>
+
+                            <!-- Reward Badge -->
+                            ${item.reward ? `
+                                <div class="absolute top-3 right-3 bg-neonYellow/90 text-black px-3 py-1 rounded-full text-[10px] font-extrabold font-mono shadow-neon-yellow reward-pulse-anim flex items-center space-x-1">
+                                    <span>🎁</span>
+                                    <span>${escapeHtml(item.reward)}</span>
+                                </div>
+                            ` : ''}
+
+                            <!-- Location Badge -->
+                            <div class="absolute bottom-3 left-3 bg-obsidian/80 backdrop-blur-md px-3 py-1 rounded-xl border border-slate-700/80 text-[11px] font-mono font-bold text-slate-200">
+                                📍 ${escapeHtml(item.location)}
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div class="space-y-2 cursor-pointer" onclick="openDetailModal('${item.id}')">
+                                <div class="flex items-center space-x-2 text-[10px] font-mono text-slate-400">
+                                    <span>${catObj.label}</span>
+                                    <span>&bull;</span>
+                                    <span>${item.date}</span>
+                                </div>
+
+                                <h3 class="font-extrabold font-syne text-white text-base group-hover:text-neonCyan transition-colors line-clamp-1">
+                                    ${escapeHtml(item.title)}
+                                </h3>
+
+                                <p class="text-xs font-mono text-slate-400 line-clamp-2 leading-relaxed">
+                                    ${escapeHtml(item.description)}
+                                </p>
+                            </div>
+
+                            <!-- Card Controls -->
+                            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 font-mono text-xs">
+                                <button onclick="toggleItemResolved('${item.id}')" class="flex-1 py-2 px-3 rounded-xl border font-bold transition-all flex items-center justify-center space-x-1.5 ${
+                                    item.resolved
+                                    ? 'border-slate-700 bg-surfaceLight text-slate-300 hover:bg-slate-700'
+                                    : 'border-neonLime/40 bg-neonLime/10 text-neonLime hover:bg-neonLime hover:text-black shadow-neon-lime'
+                                }">
+                                    <span>${item.resolved ? '↩️ RE-OPEN' : '✨ MARK REUNITED'}</span>
+                                </button>
+
+                                <button onclick="confirmDeleteItem('${item.id}')" title="Delete Listing" class="p-2 rounded-xl border border-slate-800 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 transition-colors">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleItemResolved(id) {
+            const index = campusItems.findIndex(i => i.id === id);
+            if (index !== -1) {
+                const isNowResolved = !campusItems[index].resolved;
+                campusItems[index].resolved = isNowResolved;
+                saveState();
+                applyFilters();
+
+                if (isNowResolved) {
+                    triggerConfetti();
+                    showToast('🎉 Item marked as Reunited!', 'success');
+                } else {
+                    showToast('Listing restored to active board.', 'info');
+                }
+
+                if (activeDetailItemId === id) closeDetailModal();
+            }
+        }
+
+        function confirmDeleteItem(id) {
+            const item = campusItems.find(i => i.id === id);
+            if (!item) return;
+
+            openConfirmModal('REMOVE ITEM?', `Remove "${item.title}" from campus network?`, () => {
+                const cardEl = document.getElementById(`card-${id}`);
+                if (cardEl) {
+                    cardEl.classList.add('card-exit');
+                    setTimeout(() => {
+                        campusItems = campusItems.filter(i => i.id !== id);
+                        saveState();
+                        applyFilters();
+                        showToast('Item deleted.', 'info');
+                    }, 300);
+                } else {
+                    campusItems = campusItems.filter(i => i.id !== id);
+                    saveState();
+                    applyFilters();
+                }
+                if (activeDetailItemId === id) closeDetailModal();
+            });
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const typeRadio = document.querySelector('input[name="formType"]:checked');
+            const title = document.getElementById('form-title').value.trim();
+            const category = document.getElementById('form-category').value;
+            const location = document.getElementById('form-location').value;
+            const date = document.getElementById('form-date').value;
+            const studentName = document.getElementById('form-student-name').value.trim();
+            const contact = document.getElementById('form-contact').value.trim();
+            const rewardSelect = document.getElementById('form-reward-type').value;
+            const rewardCustom = document.getElementById('form-reward-custom').value.trim();
+            const image = document.getElementById('form-image').value.trim();
+            const description = document.getElementById('form-description').value.trim();
+
+            const finalReward = (typeRadio && typeRadio.value === 'lost') ? (rewardCustom || rewardSelect) : '';
+
+            const newItem = {
+                id: 'item_' + Date.now(),
+                type: typeRadio ? typeRadio.value : 'lost',
+                title,
+                category,
+                location,
+                date,
+                studentName,
+                contact,
+                reward: finalReward,
+                image,
+                description,
+                resolved: false,
+                createdAt: Date.now()
+            };
+
+            campusItems.unshift(newItem);
+            saveState();
+            applyFilters();
+            closePostModal();
+            showToast('⚡ Item broadcast to campus!', 'success');
+        }
+
+        function toggleRewardInputVisibility() {
+            const typeVal = document.querySelector('input[name="formType"]:checked').value;
+            const container = document.getElementById('reward-input-container');
+            if (typeVal === 'found') {
+                container.classList.add('opacity-30', 'pointer-events-none');
+            } else {
+                container.classList.remove('opacity-30', 'pointer-events-none');
+            }
+        }
+
+        function resetAllFilters() {
+            activeCategory = 'all';
+            activeTypeFilter = 'all';
+            document.getElementById('search-input').value = '';
+            document.getElementById('location-filter').value = 'all';
+            document.getElementById('reward-only-filter').checked = false;
+            renderCategoryPills();
+            updateTypeButtonsUI();
+            applyFilters();
+            showToast('Filters reset', 'info');
+        }
+
+        function toggleSafetyAccordion() {
+            const content = document.getElementById('safety-accordion-content');
+            const icon = document.getElementById('safety-accordion-icon');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Modals Logic
+        function openPostModal() {
+            document.getElementById('item-form').reset();
+            toggleRewardInputVisibility();
+            const backdrop = document.getElementById('post-modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+        }
+
+        function closePostModal() {
+            const backdrop = document.getElementById('post-modal-backdrop');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 250);
+        }
+
+        function openDetailModal(id) {
+            const item = campusItems.find(i => i.id === id);
+            if (!item) return;
+
+            activeDetailItemId = id;
+            const catObj = categories[item.category] || categories.other;
+            const isLost = item.type === 'lost';
+
+            document.getElementById('detail-title').textContent = item.title;
+            document.getElementById('detail-description').textContent = item.description;
+            document.getElementById('detail-location').textContent = item.location;
+            document.getElementById('detail-date').textContent = item.date;
+            document.getElementById('detail-student-name').textContent = item.studentName;
+            document.getElementById('detail-contact-info').textContent = item.contact;
+
+            const imgEl = document.getElementById('detail-image');
+            imgEl.src = item.image && item.image.trim() !== '' ? item.image : catObj.img;
+            imgEl.onerror = () => imgEl.src = catObj.img;
+
+            const typeBadge = document.getElementById('detail-type-badge');
+            typeBadge.textContent = item.type.toUpperCase();
+            typeBadge.className = `px-3 py-1 rounded-full text-xs font-black font-mono ${
+                isLost ? 'bg-rose-500 text-white' : 'bg-neonLime text-black'
+            }`;
+
+            document.getElementById('detail-category-badge').textContent = catObj.label;
+
+            const rewardBox = document.getElementById('detail-reward-container');
+            if (item.reward && item.reward.trim() !== '') {
+                rewardBox.classList.remove('hidden');
+                document.getElementById('detail-reward-text').textContent = item.reward;
+            } else {
+                rewardBox.classList.add('hidden');
+            }
+
+            const resolveBtn = document.getElementById('modal-resolve-btn');
+            resolveBtn.onclick = () => toggleItemResolved(item.id);
+            resolveBtn.textContent = item.resolved ? '↩️ RE-OPEN LISTING' : '✨ MARK REUNITED';
+
+            document.getElementById('modal-delete-btn').onclick = () => confirmDeleteItem(item.id);
+
+            const backdrop = document.getElementById('detail-modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+        }
+
+        function closeDetailModal() {
+            activeDetailItemId = null;
+            const backdrop = document.getElementById('detail-modal-backdrop');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 250);
+        }
+
+        function openConfirmModal(title, msg, onConfirm) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-msg').textContent = msg;
+            confirmCallback = onConfirm;
+
+            document.getElementById('confirm-action-btn').onclick = () => {
+                if (confirmCallback) confirmCallback();
+                closeConfirmModal();
+            };
+
+            const backdrop = document.getElementById('confirm-modal-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+        }
+
+        function closeConfirmModal() {
+            const backdrop = document.getElementById('confirm-modal-backdrop');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 200);
+        }
+
+        function copyContactInfo() {
+            const text = document.getElementById('detail-contact-info').textContent;
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('Contact copied!', 'info');
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const isSuccess = type === 'success';
+
+            toast.className = `pointer-events-auto flex items-center space-x-3 px-5 py-3.5 rounded-2xl glass-card font-mono text-xs font-bold text-white border ${
+                isSuccess ? 'border-neonLime/50 text-neonLime' : 'border-neonCyan/50 text-neonCyan'
+            } shadow-2xl transition-all duration-300 transform translate-y-5 opacity-0`;
+
+            toast.innerHTML = `
+                <span>${isSuccess ? '⚡' : 'ℹ️'}</span>
+                <span>${escapeHtml(message)}</span>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-5', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-5', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+        }
+    </script>
+</body>
+</html>
